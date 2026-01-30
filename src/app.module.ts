@@ -3,7 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { JobsModule } from './jobs/jobs.module';
+
+// N-Tier Architecture Imports
+import { JobsController } from './api/controllers/jobs.controller';
+import { JobsService } from './business/services/jobs.service';
+import { Job } from './data/entities/job.entity';
 
 @Module({
   imports: [
@@ -20,16 +24,17 @@ import { JobsModule } from './jobs/jobs.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'], // Busca automáticamente tus entidades
+      entities: [__dirname + '/data/entities/**/*.entity{.ts,.js}'], // Entidades en la capa de datos
       synchronize: true, // Auto-crea las tablas en Supabase (solo desarrollo)
       ssl: {
         rejectUnauthorized: false, // Necesario para la conexión segura con Supabase
       },
     }),
 
-    JobsModule,
+    // Registro de entidades para inyección de repositorios
+    TypeOrmModule.forFeature([Job]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, JobsController], // Controllers de la capa API
+  providers: [AppService, JobsService], // Services de la capa Business
 })
-export class AppModule {}
+export class AppModule { }
