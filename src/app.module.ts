@@ -9,6 +9,10 @@ import { JobsController } from './api/controllers/jobs.controller';
 import { JobsService } from './business/services/jobs.service';
 import { Job } from './data/entities/job.entity';
 
+import { ServicesController } from './api/controllers/services.controller';
+import { ServicesService } from './business/services/services.service';
+import { Service } from './data/entities/service.entity';
+
 @Module({
   imports: [
     // Cargamos las variables de entorno del archivo .env
@@ -32,9 +36,9 @@ import { Job } from './data/entities/job.entity';
     }),
 
     // Registro de entidades para inyección de repositorios
-    TypeOrmModule.forFeature([Job]),
+    TypeOrmModule.forFeature([Job, Service]),
   ],
-  controllers: [AppController, JobsController], // Controllers de la capa API
-  providers: [AppService, JobsService], // Services de la capa Business
+  controllers: [AppController, JobsController, ServicesController], // Controllers de la capa API
+  providers: [AppService, JobsService, ServicesService], // Services de la capa Business
 })
 export class AppModule { }
