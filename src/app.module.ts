@@ -17,28 +17,28 @@ import { Service } from './data/entities/service.entity';
   imports: [
     // Cargamos las variables de entorno del archivo .env
     ConfigModule.forRoot({
-      isGlobal: true, // Esto hace que no tengas que importar ConfigModule en otros módulos
+      isGlobal: true, 
     }),
 
-    // Configuración de la conexión a Supabase
+    // Configuración de la conexión a PostgreSQL en Railway
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || '5432', 10),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [__dirname + '/data/entities/**/*.entity{.ts,.js}'], // Entidades en la capa de datos
-      synchronize: true, // Auto-crea las tablas en Supabase (solo desarrollo)
+      host: process.env.PGHOST,             // Variable nativa de Railway
+      port: parseInt(process.env.PGPORT || '5432', 10), // Variable nativa de Railway
+      username: process.env.PGUSER,         // Variable nativa de Railway
+      password: process.env.PGPASSWORD,     // Variable nativa de Railway
+      database: process.env.PGDATABASE,     // Variable nativa de Railway
+      entities: [__dirname + '/data/entities/**/*.entity{.ts,.js}'],
+      synchronize: true, // Esto creará tus tablas automáticamente en la nueva DB
       ssl: {
-        rejectUnauthorized: false, // Necesario para la conexión segura con Supabase
+        rejectUnauthorized: false, // Mantenlo para evitar problemas con certificados internos
       },
     }),
 
     // Registro de entidades para inyección de repositorios
     TypeOrmModule.forFeature([Job, Service]),
   ],
-  controllers: [AppController, JobsController, ServicesController], // Controllers de la capa API
-  providers: [AppService, JobsService, ServicesService], // Services de la capa Business
+  controllers: [AppController, JobsController, ServicesController],
+  providers: [AppService, JobsService, ServicesService],
 })
 export class AppModule { }
